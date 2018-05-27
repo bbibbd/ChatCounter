@@ -6,7 +6,7 @@ public class ChatCounter {
 		
 	}
 	
-	public void deletyRedndacy(String[] message) {
+	public void deleteRedndacy(String[] message) {
 		
 	}
 	

@@ -1,7 +1,7 @@
 package edu.handong.csee.java.HW3.ChatCounter;
 
 public class DataAccessor {
-
+	
 	private String name;
 	private String date;
 	private String message;
@@ -11,7 +11,8 @@ public class DataAccessor {
 		this.date = date;
 		this.message = message;
 	}
-
+	
+	
 	public String getName() {
 		return name;
 	}
@@ -36,13 +37,13 @@ public class DataAccessor {
 		this.message = message;
 	}
 
-	public boolean equalsTo(DataAccessor compare) {
-		if((compare.getDate().equals(this.date) && compare.getName().equals(this.name)) && compare.getMessage().equals(this.message))
+	public boolean equalsTo(DataAccessor dataAccessor) {
+		if((dataAccessor.getDate().equals(this.date) && dataAccessor.getName().equals(this.name)) && dataAccessor.getMessage().equals(this.message))
 			return true;
 		return false;
-
 	}
-
 	
+
+
 
 }

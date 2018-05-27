@@ -6,8 +6,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.csv.*;
 
-
-
 import java.io.*;
 
 public class FileLoader {
@@ -39,7 +37,6 @@ public class FileLoader {
 	public void loadTXTFiles() {
 		for(File file: path.listFiles()) {
 			if(file.getName().contains(".txt")) {
-
 				try {
 					BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
 					String thisLine;
@@ -96,6 +93,40 @@ public class FileLoader {
 			}
 
 		}
+
+	}
+	
+	/**
+	 * This class loads CSV files. If the files contains .csv, implement this method
+	 * imported CommonsCSV
+	 * get(0): time , substring(11,16) - get time to check the repeated message
+	 * get(1): name
+	 * get(2): get message
+	 * CSVRecord: A CSV record parsed from a CSV file.
+	 */
+	public void loadCSVFiles() {
+		for(File file: path.listFiles()) {
+			if(file.getName().contains(".csv")) {
+				Reader in;
+				try {
+					in = new FileReader(file);
+					Iterable<CSVRecord> recordsOfCSVFiles = CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(in);
+					for(CSVRecord record : recordsOfCSVFiles) {
+						String time = record.get(0).substring(11,16); //get data from first column (7th letters to 16th letters) - time 
+						String name = record.get(1);	//get data from second column - name
+						String text = record.get(2);	//get data from third column - 
+						if(!messages.containsKey(name))	//
+							messages.put(name, new ArrayList<DataAccessor>());
+						messages = addUnique(messages, new DataAccessor(name, time, text));
+					}
+
+				}catch(Exception e) {
+
+				}
+
+			}
+
+		} 
 
 	}
 
