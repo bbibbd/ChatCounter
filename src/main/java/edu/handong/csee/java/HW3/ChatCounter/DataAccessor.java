@@ -12,7 +12,6 @@ public class DataAccessor {
 		this.message = message;
 	}
 	
-	
 	public String getName() {
 		return name;
 	}

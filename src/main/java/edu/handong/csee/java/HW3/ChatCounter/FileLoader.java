@@ -33,7 +33,15 @@ public class FileLoader {
 		return hashMap; 
 	}
 
-
+/**
+ * This method loads txt files
+ * Using Regular Expression and grouping to make it easy to deal the data
+ * [NAME] [TIME] text => name has form of characters and integers, time has (integers + ':' +AM or PM) or, (오전/오후 +integers+:+integers)
+ * So, the pattern: \\[(.+)\\] \\[(.*[0-9]+:[0-9]+.*)\\] (.+)
+ * I declared another pattern which can deal the time: (..)\\s([0-9]+:[0-9]+)|([0-9]+:[0-9]+)\\s(..)
+ * if [오전/오후 hh:mm] group 3 and 4 are null, and group 1 becomes 오전/오후 and group 2 becomes time
+ * else, group 1 and 2 will be null and 3 becomes time, and 4 becomes AM or PM
+ */
 	public void loadTXTFiles() {
 		for(File file: path.listFiles()) {
 			if(file.getName().contains(".txt")) {
@@ -62,7 +70,8 @@ public class FileLoader {
 									hour = Integer.parseInt(time.substring(0, time.length() - 3));
 									if(m2.group(1).equals("오후"))
 										hour += 12;
-									else {
+								}
+								else {
 										time = m2.group(3);
 										hour = Integer.parseInt(time.substring(0, time.length() - 3));
 										if(m2.group(4).equals("PM"))
@@ -72,7 +81,7 @@ public class FileLoader {
 									if(hour < 10)
 										strHour = "0" + strHour;
 									date = strHour + time.substring(time.length() - 3);
-								}
+								
 							}
 
 							if(!messages.containsKey(name))
@@ -82,10 +91,8 @@ public class FileLoader {
 					} 
 					br.close();
 				}catch (UnsupportedEncodingException | FileNotFoundException e) {
-					//System.out.println("Error 1");
 					e.printStackTrace();
 				} catch (IOException e) {
-					//System.out.println("Error 2");
 					e.printStackTrace();
 
 				}
@@ -97,7 +104,7 @@ public class FileLoader {
 	}
 	
 	/**
-	 * This class loads CSV files. If the files contains .csv, implement this method
+	 * This method loads CSV files. If the files contains .csv, implement this method
 	 * imported CommonsCSV
 	 * get(0): time , substring(11,16) - get time to check the repeated message
 	 * get(1): name

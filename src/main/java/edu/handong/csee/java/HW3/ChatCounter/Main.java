@@ -1,23 +1,46 @@
 package edu.handong.csee.java.HW3.ChatCounter;
 
+import java.util.*;
+
 public class Main {
 
 	public static void main(String[] args) {
-		
-		Main runner = new Main();
-		runner.run();
+
+		Main main = new Main();
+		main.run();
+
 	}
 
+
 	private void run() {
-		String directory = "파일경로";
-		//Loading a file
-		FileLoader fileLoader = new FileLoader("");
+
+		System.out.println("Start!");
+
+		FileLoader fileLoader = new FileLoader("C:\\git\\HW3\\chat_log");
+
 		fileLoader.loadCSVFiles();
-		//read files from mac
-		// read files from windows
-		//parsing messages
-		//Export result file
-		
+		fileLoader.loadTXTFiles();
+		HashMap<String, ArrayList<DataAccessor>> nameAndMessage = fileLoader.getMessages();
+
+		List<ChatCounter> chatCount = new ArrayList<ChatCounter>();
+
+		for(String name : nameAndMessage.keySet()) {
+
+			chatCount.add(new ChatCounter(name, nameAndMessage.get(name).size()));
+
+			//System.out.println(name + " " + NMlist.get(name).size());
+
+			//for(DataAccessor namdDateMessage : nameAndMessage.get(name)) {
+
+				//System.out.println(name+ " " + namdDateMessage.getDate() + " " + namdDateMessage.getMessage());
+
+			//}
+		}
+		//Collections.sort(chatCount);
+		for(ChatCounter chat : chatCount) {
+			chat.print();
+		}
+
 	}
-	
+
 }
