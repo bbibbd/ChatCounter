@@ -8,19 +8,40 @@ import org.apache.commons.csv.*;
 
 import java.io.*;
 
+/**
+ * This class will load csv and txt files and parse it at the same time.
+ * Used commons CSV to paring csv files 
+ * Used regular expression to paring txt files
+ * @author KKB
+ *
+ */
 public class FileLoader {
 	private File path;
 	private HashMap<String, ArrayList<DataAccessor>> messages = new HashMap<String, ArrayList<DataAccessor>>();
 
+	/**
+	 * sets path using constructor
+	 * @param path
+	 */
 	public FileLoader(String path) {
 		this.path = new File(path);
 	}
-
+	
+	/**
+	 * Declare 
+	 * @return
+	 */
 	public HashMap<String, ArrayList<DataAccessor>> getMessages() {
 		return messages;
 	}
-
-	public HashMap<String, ArrayList<DataAccessor>> addUnique(HashMap<String, ArrayList<DataAccessor>> 
+	
+	/**
+	 * add data to HashMap
+	 * @param hashMap
+	 * @param data
+	 * @return
+	 */
+	public HashMap<String, ArrayList<DataAccessor>> addData(HashMap<String, ArrayList<DataAccessor>> 
 	hashMap, DataAccessor data){
 		for(String name : hashMap.keySet()) {
 			for(DataAccessor d: hashMap.get(name)) {
@@ -33,15 +54,15 @@ public class FileLoader {
 		return hashMap; 
 	}
 
-/**
- * This method loads txt files
- * Using Regular Expression and grouping to make it easy to deal the data
- * [NAME] [TIME] text => name has form of characters and integers, time has (integers + ':' +AM or PM) or, (오전/오후 +integers+:+integers)
- * So, the pattern: \\[(.+)\\] \\[(.*[0-9]+:[0-9]+.*)\\] (.+)
- * I declared another pattern which can deal the time: (..)\\s([0-9]+:[0-9]+)|([0-9]+:[0-9]+)\\s(..)
- * if [오전/오후 hh:mm] group 3 and 4 are null, and group 1 becomes 오전/오후 and group 2 becomes time
- * else, group 1 and 2 will be null and 3 becomes time, and 4 becomes AM or PM
- */
+	/**
+	 * This method loads txt files
+	 * Using Regular Expression and grouping to make it easy to deal the data
+	 * [NAME] [TIME] text => name has form of characters and integers, time has (integers + ':' +AM or PM) or, (오전/오후 +integers+:+integers)
+	 * So, the pattern: \\[(.+)\\] \\[(.*[0-9]+:[0-9]+.*)\\] (.+)
+	 * I declared another pattern which can deal the time: (..)\\s([0-9]+:[0-9]+)|([0-9]+:[0-9]+)\\s(..)
+	 * if [오전/오후 hh:mm] group 3 and 4 are null, and group 1 becomes 오전/오후 and group 2 becomes time
+	 * else, group 1 and 2 will be null and 3 becomes time, and 4 becomes AM or PM
+	 */
 	public void loadTXTFiles() {
 		for(File file: path.listFiles()) {
 			if(file.getName().contains(".txt")) {
@@ -72,21 +93,21 @@ public class FileLoader {
 										hour += 12;
 								}
 								else {
-										time = m2.group(3);
-										hour = Integer.parseInt(time.substring(0, time.length() - 3));
-										if(m2.group(4).equals("PM"))
-											hour += 12;
-									}
-									String strHour = Integer.toString(hour);
-									if(hour < 10)
-										strHour = "0" + strHour;
-									date = strHour + time.substring(time.length() - 3);
-								
+									time = m2.group(3);
+									hour = Integer.parseInt(time.substring(0, time.length() - 3));
+									if(m2.group(4).equals("PM"))
+										hour += 12;
+								}
+								String strHour = Integer.toString(hour);
+								if(hour < 10)
+									strHour = "0" + strHour;
+								date = strHour + time.substring(time.length() - 3);
+
 							}
 
 							if(!messages.containsKey(name))
 								messages.put(name, new ArrayList<DataAccessor>());
-							messages = addUnique(messages, new DataAccessor(name, date, text));
+							messages = addData(messages, new DataAccessor(name, date, text));
 						}
 					} 
 					br.close();
@@ -102,7 +123,7 @@ public class FileLoader {
 		}
 
 	}
-	
+
 	/**
 	 * This method loads CSV files. If the files contains .csv, implement this method
 	 * imported CommonsCSV
@@ -124,7 +145,7 @@ public class FileLoader {
 						String text = record.get(2);	//get data from third column - 
 						if(!messages.containsKey(name))	//
 							messages.put(name, new ArrayList<DataAccessor>());
-						messages = addUnique(messages, new DataAccessor(name, time, text));
+						messages = addData(messages, new DataAccessor(name, time, text));
 					}
 
 				}catch(Exception e) {

@@ -37,7 +37,7 @@ public class DataAccessor {
 	}
 
 	public boolean equalsTo(DataAccessor dataAccessor) {
-		if((dataAccessor.getDate().equals(this.date) && dataAccessor.getName().equals(this.name)) && dataAccessor.getMessage().equals(this.message))
+		if((dataAccessor.getDate().equals(this.date) && dataAccessor.getName().equals(this.name)) && this.message.startsWith(dataAccessor.getMessage()))
 			return true;
 		return false;
 	}
