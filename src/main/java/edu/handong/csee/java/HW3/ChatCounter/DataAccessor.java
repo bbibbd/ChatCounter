@@ -75,8 +75,5 @@ public class DataAccessor {
 			return true;
 		return false;
 	}
-	
-
-
 
 }
