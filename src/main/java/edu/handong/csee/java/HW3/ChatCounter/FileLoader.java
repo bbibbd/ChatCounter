@@ -12,7 +12,7 @@ import java.io.*;
  * This class will load csv and txt files and parse it at the same time.
  * Used commons CSV to paring csv files 
  * Used regular expression to paring txt files
- * @author KKB
+ * @author 
  *
  */
 public class FileLoader {
