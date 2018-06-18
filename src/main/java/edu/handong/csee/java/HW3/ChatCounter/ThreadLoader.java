@@ -10,7 +10,9 @@ public class ThreadLoader extends Thread{
 	private File file;
 	private ArrayList<DataAccessor> pool;
 
-	
+	/*
+	 *this method run thread loader
+	 */
 	public void run() {
 		if(file.getName().endsWith(".csv")) {
 			FileLoader loader = new FileLoader();
