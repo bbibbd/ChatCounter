@@ -1,6 +1,9 @@
 package edu.handong.csee.java.HW3.ChatCounter;
 
+import java.io.File;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.cli.CommandLine;
 
@@ -24,6 +27,7 @@ public class Main {
 	String output;
 	boolean verbose;
 	boolean help;
+	int numOfThreads;
 
 	/**
 	 * This is main method and run the program
@@ -49,21 +53,33 @@ public class Main {
 				return;
 			}	
 
-			FileLoader fileLoader = new FileLoader(input);
+			File directory = new File(input);
+			ExecutorService executor = Executors.newFixedThreadPool(numOfThreads);
+			ArrayList<ThreadLoader> loaders = new ArrayList<ThreadLoader>();
+			
+			for(File file : directory.listFiles()) {
+				Runnable loader = new ThreadLoader(file);
+				executor.execute(loader); 
+				loaders.add((ThreadLoader) loader);
+			}
+			
+			
 
-			fileLoader.loadCSVFiles();
-			fileLoader.loadTXTFiles();
-
-			HashMap<String, ArrayList<DataAccessor>> nameAndMessage = fileLoader.getMessages();
-			List<DataOfNameAndCount> chatCount = new ArrayList<DataOfNameAndCount>();
-
-			for(String name : nameAndMessage.keySet()) {
-				if(!name.equals(""))
-					chatCount.add(new DataOfNameAndCount(name, nameAndMessage.get(name).size()));
+			while (!executor.isTerminated()) {
+				
 			}
 
-			Collections.sort(chatCount);
-
+			HashMap<String, ArrayList<DataAccessor>> pool = new HashMap<String, ArrayList<DataAccessor>>();
+			List<DataOfNameAndCount> chatCount = new ArrayList<DataOfNameAndCount>();
+			
+			FileParser parser = new FileParser();
+			
+			for(ThreadLoader e : loaders) {
+				for(DataAccessor data:e.getDataPool()) {
+					pool = parser.addUnique(pool, data);
+				}
+			}			
+			Collections.sort(chatCount);			
 			System.out.println("result: ");
 			
 			for(DataOfNameAndCount chat : chatCount) 
@@ -83,6 +99,8 @@ public class Main {
 			input = cmd.getOptionValue("i");
 			output = cmd.getOptionValue("o");
 			help = cmd.hasOption("h");
+			numOfThreads = Integer.parseInt(cmd.getOptionValue("c"));
+			
 		} catch (Exception e) {
 			printHelp(options);
 			return false;
@@ -116,6 +134,15 @@ public class Main {
 		options.addOption(Option.builder("h").longOpt("help")
 				.desc("Help")
 				.build());
+		
+		// add options by using OptionBuilder
+		options.addOption(Option.builder("c").longOpt("num-of-threads")
+				.desc("Set number of threads to use")
+				.hasArg()
+				.argName("number of threads to load files ")
+				.required()
+				.build());
+		
 		return options;
 	}
 
